@@ -7,17 +7,15 @@
 #include <string.h>
 
 int main(int argc, char* argv[]) {
-
-  if (argc == 2) {
-    char* filename = argv[1];
-  }
-  else {
-    char* filename = "test_file.txt";
+  char* filename = "test_file.txt";
+  if (argc > 1) {
+    filename = argv[1];
   }
 
   int file = open(filename, O_RDONLY);
   char* put_here = calloc(sizeof(char), 100);
-  read(file, put_here, 100);
+  int bytes_read = read(file, put_here, 100);
+  printf("we read %d bytes\n", bytes_read);
   printf("file contents: |%s|\n", put_here);
   free(put_here);
   close(file);
@@ -31,7 +29,20 @@ int main(int argc, char* argv[]) {
   file = open(filename, O_RDONLY);
   char* new_file_contents = calloc(sizeof(char), 500);
   read(file, new_file_contents, 500);
-  printf("new file contents: %s\n", new_file_contents);
+  printf("new file contents: |%s|\n", new_file_contents);
   free(new_file_contents);
   close(file);
+
+  file = open(filename, O_WRONLY);
+  char* orig = "Hi, I'm Billy!";
+  write(file, orig, strlen(orig));
+  close(file);
+
+  file = open(filename, O_RDONLY);
+  char* old_file_contents = calloc(sizeof(char), 500);
+  read(file, old_file_contents, 500);
+  printf("reset file contents: |%s|\n", old_file_contents);
+  free(old_file_contents);
+  close(file);
+
 }
